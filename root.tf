@@ -7,3 +7,11 @@ module "kratos_network" {
     project_tags = var.project_tags
   
 }
+
+module "security_iam" {
+    source = "./modules/security-iam"
+
+    vpc_id = module.kratos_network.vpc_id
+    
+  
+}   
