@@ -67,6 +67,13 @@ project-kratos/
 - **Control Plane Security Group:** Configured rigid ingress rules restricting port `443` management traffic.
 - **Worker Nodes Security Group:** Established secure internal cluster communication boundaries, allowing control plane routing and outbound internet access while blocking unauthorized external exposure.
 
+## 🏗️ Phase 2 Complete: EKS Cluster Setup
+Successfully implemented the core computing infrastructure for Project Kratos.
+- Configured **AWS EKS Cluster (Control Plane)** with strict IAM role access controls.
+- Deployed **EKS Node Group (Worker Nodes)** running inside isolated Private Subnets with auto-scaling configuration (`min: 1, desired: 2, max: 3`).
+- Bound all components seamlessly using Terraform multi-module variable mappings and cross-referencing.
+
+
 ---
 
 ## 🛠️ Tech Stack Used
