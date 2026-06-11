@@ -22,10 +22,9 @@
     }
   }
 
-  resource "aws_iam_policy_attachment" "cluster_role_attachment" {
-    name       = "eks-cluster-role-attachment"
+  resource "aws_iam_role_policy_attachment" "cluster_role_attachment" {
     policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-    roles      = [aws_iam_role.cluster_role.name]
+    role      = aws_iam_role.cluster_role.name
   }
 
   resource "aws_iam_role" "node_group_role" {

@@ -15,3 +15,11 @@ module "security_iam" {
     
   
 }   
+
+module "eks_cluster" {
+    source = "./modules/eks_cluster"
+    cluster_role = module.security_iam.cluster_role
+    node_group_arn = module.security_iam.node_group_arn
+    cluster_security_group_id = module.security_iam.cluster_security_group_id
+    private_subnet_ids = module.kratos_network.private_subnet_ids
+}
