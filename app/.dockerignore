@@ -1,0 +1,9 @@
+# In files ko Docker image mein bilkul shamil mat karna
+.terraform/
+.github/
+modules/
+*.tf
+*.tfvars
+.terraform.lock.hcl
+README.md
+.gitignore

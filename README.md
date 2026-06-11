@@ -74,6 +74,23 @@ Successfully implemented the core computing infrastructure for Project Kratos.
 - Bound all components seamlessly using Terraform multi-module variable mappings and cross-referencing.
 
 
+## Phase 3: Continuous Integration & Automated Artifact Delivery
+
+In this phase, manual infrastructure clicks were completely eliminated by moving the core artifact storage and security layers into code. A secure, optimized, and automated CI pipeline was built to build and deliver containerized application updates.
+
+### Key Implementations:
+* **Infrastructure Isolation:** Separated core state resources (AWS ECR & IAM OIDC Role) into a bootstrap infrastructure pipeline to preserve data and avoid unnecessary AWS compute costs during local teardowns.
+* **Hardened Dockerfile:** Configured a minimal footprint `nginx:alpine` image, structured precise working directories, and explicitly exposed port `80`.
+* **Zero-Secret Authentication:** Implemented AWS OpenID Connect (OIDC) federation within GitHub Actions, enabling the runner to assume short-lived IAM roles without storing static, high-risk AWS Access Keys.
+* **Immutable Tagging:** Automated immutable image tagging utilizing Git short-SHA commits alongside the `latest` tracking tag to ensure perfect rollback capabilities.
+
+### Pipeline Architecture Flow:
+1. Developer pushes code to the `main` branch.
+2. GitHub Actions runner spins up and checks out the code.
+3. Runner assumes AWS IAM Role securely via OIDC.
+4. Docker Buildx initializes cache-optimized layers.
+5. Custom image builds, tags with Git Short-SHA, and pushes to Amazon ECR.
+
 ---
 
 ## 🛠️ Tech Stack Used
