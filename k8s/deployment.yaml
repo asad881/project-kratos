@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kratos-app-deployment
+  labels:
+    app: kratos-app
+spec:
+  replicas: 2 # Application ki kitni copies chalani hain
+  selector:
+    matchLabels:
+      app: kratos-app
+  template:
+    metadata:
+      labels:
+        app: kratos-app
+    spec:
+      containers:
+      - name: kratos-app-container
+        image: 819884683254.dkr.ecr.us-east-1.amazonaws.com/ecr_repo_defult:latest # Aapki AWS ECR image ka path
+        ports:
+        - containerPort: 80 # Jis port par aapki app container ke andar chal rahi hai
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
