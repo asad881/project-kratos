@@ -47,8 +47,8 @@ project-kratos/
 ├── terraform/           # Infrastructure as Code
 │   ├── environments/    # Staging & Prod configs
 │   └── modules/         # Reusable VPC, K8s modules
-├── kubernetes/          # K8s Manifests (Helm/Kustomize)
-├── src/                 # Application Source Code
+├── k8s/          # K8s Manifests (Helm/Kustomize)
+├── app/                 # Application Source Code
 └── README.md            # Project Documentation
 ```
 
@@ -90,6 +90,10 @@ In this phase, manual infrastructure clicks were completely eliminated by moving
 3. Runner assumes AWS IAM Role securely via OIDC.
 4. Docker Buildx initializes cache-optimized layers.
 5. Custom image builds, tags with Git Short-SHA, and pushes to Amazon ECR.
+
+## Phase 4: GitOps Configuration & Kubernetes Manifests
+- **Declarative Manifests:** Formulated production-ready Kubernetes Deployment and NodePort Service configurations.
+- **Automated GitOps Bridge:** Upgraded the CI engine to automatically patch the tracking manifests with newly minted container tags and safely push back via `[skip ci]` token mechanics.
 
 ---
 

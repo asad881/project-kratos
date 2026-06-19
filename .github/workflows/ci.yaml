@@ -49,3 +49,18 @@ jobs:
         tags: |
           ${{steps.login-ecr.outputs.registry}}/ecr_repo_defult:latest
           ${{steps.login-ecr.outputs.registry}}/ecr_repo_defult:${{steps.vars.outputs.sha_short}}
+
+    - name: replacing latest tag from github short sha
+      run: |
+        sed -i 's/:latest/:${{ steps.vars.outputs.sha_short }}/' k8s/deployment.yaml
+
+    - name: git config
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "Asad881"
+
+    - name: git commit and push
+      run: |
+        git add k8s/deployment.yaml
+        git commit -m "chore(gitops): update app image tag to ${{steps.vars.outputs.sha_short}}[skip ci]"
+        git push origin HEAD:${{ github.ref_name }}
