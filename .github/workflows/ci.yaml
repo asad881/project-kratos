@@ -17,11 +17,14 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read
+      contents: write
 
     steps:
     - name: checkout repository code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} # Ye line add karna zaroori hai
+        persist-credentials: true # Taake git push ke waqt yehi token use ho
 
     - name: Set a short github sha
       id: vars
