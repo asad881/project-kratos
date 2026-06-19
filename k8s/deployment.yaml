@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kratos-app-container
-        image: 819884683254.dkr.ecr.us-east-1.amazonaws.com/ecr_repo_defult:latest # Aapki AWS ECR image ka path
+        image: 819884683254.dkr.ecr.us-east-1.amazonaws.com/ecr_repo_defult:8b095d1 # Aapki AWS ECR image ka path
         ports:
         - containerPort: 80 # Jis port par aapki app container ke andar chal rahi hai
         resources:
