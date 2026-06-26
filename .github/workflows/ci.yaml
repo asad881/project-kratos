@@ -65,5 +65,9 @@ jobs:
     - name: git commit and push
       run: |
         git add k8s/deployment.yaml
-        git commit -m "chore(gitops): update app image tag to ${{steps.vars.outputs.sha_short}}[skip ci]"
-        git push origin HEAD:${{ github.ref_name }}
+        if git diff --cached --quiet; then
+          echo "No changes to deployment.yaml — skipping commit (likely a docs-only or non-app change)."
+        else
+          git commit -m "chore(gitops): update app image tag to ${{steps.vars.outputs.sha_short}}[skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+        fi
