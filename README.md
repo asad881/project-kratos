@@ -1,6 +1,6 @@
 # project-kratos
 
-**Executive Summary** : Designed to tackle business revenue loss caused by slow manual rollbacks, Project Kratos provides a self-healing infrastructure. By automating the detection and recovery process, it achieves near-zero downtime through intelligent, automated deployment rollbacks.
+**Executive Summary** : Designed to tackle business revenue loss caused by slow manual rollbacks, Project Kratos provides a self-healing GitOps infrastructure. Configuration drift is automatically detected and corrected by ArgoCD, while application-level failures are resolved through a fast, Git-based semi-automated rollback — reducing recovery time from hours to minutes.
 
 
 
@@ -11,19 +11,21 @@ graph TD
 
     %% Step 2: CI/CD Pipeline
     GitRepo -->|Trigger| GHA[GitHub Actions CI]
-    GHA -->|Build Image| DockerHub[Docker Registry]
+    GHA -->|Build + Tag with Git Short-SHA| ECR[Amazon ECR]
+    GHA -->|Auto-patch k8s manifest| GitRepo
 
     %% Step 3: GitOps Core
-    GitRepo -->|Sync Manifests| ArgoCD[ArgoCD Controller]
-    DockerHub -->|Pull Image| K8sCluster[EKS/Kubernetes Cluster]
+    ArgoCD[ArgoCD Controller] -->|Continuously Watches| GitRepo
+    ECR -->|Pull Image| K8sCluster[EKS/Kubernetes Cluster]
+    ArgoCD -->|Sync| K8sCluster
 
-    %% Step 4: The Self-Healing Loop (Most Important)
-    K8sCluster -->|Metrics| Prom[Prometheus Monitoring]
-    Prom -->|Detect 5xx Errors| Analysis{Analysis Engine}
-    
-    %% Step 5: Rollback Logic
-    Analysis -->|Failure Detected| ArgoCD
-    ArgoCD -->|Auto Rollback| K8sCluster
+    %% Step 4: Self-Healing Path - Config Drift
+    K8sCluster -->|Manual config drift detected| ArgoCD
+    ArgoCD -->|Auto-correct to last known Git state| K8sCluster
+
+    %% Step 5: Semi-Automated Path - Bad App Code
+    Dev -->|git revert on failure| GitRepo
+    GitRepo -->|Detect new commit| ArgoCD
     
     %% Output
     K8sCluster -->|Serve| User[End User]
@@ -33,9 +35,11 @@ graph TD
 
 **Infra as Code**: Multi-environment (Staging/Prod) setup using Terraform with remote state locking.
 
-**Self-healing GitOps**: Automated drift detection and correction via ArgoCD
+**Self-healing GitOps**: Automated configuration drift detection and correction via ArgoCD — any manual change to cluster state is auto-reverted to match Git.
 
-**Automated Canary Rollbacks**: Real-time monitoring of 5xx errors with 60-second automated rollbacks.
+**Fast Git-Based Recovery**: When application-level issues occur, recovery is a single `git revert` away — ArgoCD detects the new commit and syncs the cluster to the last known good state within seconds, cutting recovery time from hours to minutes.
+
+> 🚧 **Roadmap:** Automated canary rollbacks driven by real-time Prometheus 5xx-error monitoring are planned for a future phase. The current implementation handles recovery via ArgoCD self-heal (config drift) and Git-based revert (application bugs).
 
 
 
